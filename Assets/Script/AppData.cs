@@ -21,6 +21,7 @@ public class AppData : Singlton<AppData>
 
     protected override void Awake()
     {
+        base.Awake();
         Debug.Log("AppData Initialized");
     }
 
