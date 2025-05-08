@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine.UIElements;
 using UnityEditor.PackageManager;
 using System;
+using UnityEditor.SearchService;
 
 public class RCTest : MonoBehaviour
 {
@@ -60,19 +61,20 @@ public class RCTest : MonoBehaviour
         // RealityCapture 실행 정보 구성
         ProcessStartInfo psi = new ProcessStartInfo();
         psi.FileName = @"C:\Program Files\Capturing Reality\RealityCapture\RealityCapture.exe"; //앱이면 위치 변경, 현재는 rc 가 존재하는 위치이지만 나중에는 서버에서 사용할 예정
-        psi.Arguments = string.Join(" ", new string[] //원하는 명령어를 미리 스크립트로 만들어서 저장하는 것
-        {
-            "-newScene",
-            "-addFolder \"" + inputFolder + "\"",
-            "-align",
-            //"-selectComponent", "-index", "0", -> 이미 사용했던 방식을 재사용 가능
-            //"-reconstructModel", "-detailLevel", "Normal", -> 존재하지 않는 cli 명령어
-            "-calculateNormalModel",
-            "-save", "\"" + projectPath + "\"",
-            "-exportModel", "Model1", "\"" + outputModelPath + "\"", //기존적으로 모델의 이름을 Model1 으로 생성하기 때문에
-            "-quit"
-        });
-       
+        psi.Arguments = string.Join(" ", new string[]
+{
+    "-newScene",
+    "-addFolder \"" + inputFolder + "\"",
+    "-align",
+    "-calculateNormalModel",
+    "-selectComponent \"Component 0\"",
+    "-selectModel \"Model 1\"",
+    "-simplify",
+    "-exportModel \"Model 1\"","\"" + outputModelPath + "\"",
+    "-save \"" + projectPath + "\"",
+    "-quit"
+});
+
         psi.UseShellExecute = false;
         psi.CreateNoWindow = true;
         psi.RedirectStandardOutput = true;
@@ -89,5 +91,7 @@ public class RCTest : MonoBehaviour
         {
             UnityEngine.Debug.LogError("RealityCapture Error:\n" + error);
         }
+
+        AppSceneManger.Instance.ChangeScene(3);
     }
 }

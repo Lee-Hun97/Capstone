@@ -10,7 +10,7 @@ public class AppSceneManger : Singlton<AppSceneManger>
     private string scene0_name = "LoginScene";
     private string scene1_name = "MainScene";
     private string scene2_name = "CameraScene";
-    private string scene3_name = "ModelScene";
+    private string scene3_name = "3DModelScene";
 
     protected override void Awake()
     {
@@ -26,7 +26,7 @@ public class AppSceneManger : Singlton<AppSceneManger>
             case 0: SceneManager.LoadScene(scene0_name); return;
             case 1: SceneManager.LoadScene(scene1_name); return;
             case 2: SceneManager.LoadScene(scene2_name); return;
-            //case 3: SceneManager.LoadScene(scene3_name); return; 현재 미 개발
+            case 3: SceneManager.LoadScene(scene3_name); return;
             default: ExitApp(); return;
         }
     }
