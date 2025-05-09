@@ -15,7 +15,7 @@ public class RCTest : MonoBehaviour
         UnityEngine.Debug.Log("1");
     }
 
-    private void CreateRealityCaptureScript2()
+    private void CreateRealityCaptureScript2()//굳이 필요한가?
     {
         string outputDir = @"C:/Work";
         if (!Directory.Exists(outputDir))
@@ -29,6 +29,7 @@ public class RCTest : MonoBehaviour
         newProject
         addFolder ""C:/Work/InputImages""
         alignImages
+        selectComponent 0
         calculateNormalModel
         simplifyModel maxTriangles=200000
         exportModel ""C:/Work/Output/model.obj""
@@ -65,11 +66,11 @@ public class RCTest : MonoBehaviour
             "-newScene",
             "-addFolder \"" + inputFolder + "\"",
             "-align",
-            //"-selectComponent", "-index", "0", -> 이미 사용했던 방식을 재사용 가능
+            //"-selectComponent", "-index", "0", //-> 이미 사용했던 방식을 재사용 가능
             //"-reconstructModel", "-detailLevel", "Normal", -> 존재하지 않는 cli 명령어
             "-calculateNormalModel",
             "-save", "\"" + projectPath + "\"",
-            "-exportModel", "Model1", "\"" + outputModelPath + "\"", //기존적으로 모델의 이름을 Model1 으로 생성하기 때문에
+            "-exportModel", "Model_1", "\"" + outputModelPath + "\"", //기존적으로 모델의 이름을 Model1 으로 생성하기 때문에
             "-quit"
         });
        
