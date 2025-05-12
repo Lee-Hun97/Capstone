@@ -10,6 +10,8 @@ public class RuntimeOBJImporter : MonoBehaviour
     private string modelFileName = "model.obj";
     private string modelmtlFileName = "model.mtl";
 
+    [SerializeField]private ModelAdjustment modelAdjustment;
+
     void Start()
     {
         string modelPath = Path.Combine(folderPath, modelFileName);
@@ -56,5 +58,7 @@ public class RuntimeOBJImporter : MonoBehaviour
             tex.LoadImage(bytes);
             //renderer.material.mainTexture = tex;
         }
+
+        modelAdjustment.targetObject = created3DModel.transform;
     }
 }

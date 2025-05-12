@@ -93,4 +93,9 @@ public class WebCamTextureShooting : MonoBehaviour
             }
         }
     }
+
+    private void OnDestroy()
+    {
+        webCamTexture.Stop();
+    }
 }

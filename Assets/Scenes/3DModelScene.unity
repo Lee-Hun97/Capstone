@@ -224,6 +224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2012182102}
   - component: {fileID: 2012182101}
+  - component: {fileID: 2012182103}
   m_Layer: 0
   m_Name: 3DModelSceneManger
   m_TagString: Untagged
@@ -243,6 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 540819f6be282264eb7b38d196dbf7bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modelAdjustment: {fileID: 2012182103}
 --- !u!4 &2012182102
 Transform:
   m_ObjectHideFlags: 0
@@ -258,6 +260,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2012182103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012182100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bfca0ba8446e5c4d883646c1730bb70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 1434493602}
+  targetObject: {fileID: 0}
+  rotationSpeed: 0.2
+  zoomSpeed: 1
+  minZoomDis: -1
+  maxZoomDis: -100
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
