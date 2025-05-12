@@ -823,6 +823,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 
   PW: 
+  GameObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &461270488
 Transform:
   m_ObjectHideFlags: 0

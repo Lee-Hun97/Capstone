@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEngine.UIElements;
 
-public class UseRealityCapture : MonoBehaviour
+public class UseRealityCapture : MonoBehaviour//**읽을 필요도 없는 초기 버전의 rc test, 이후의 공부를 위해서 남겨놓은 것**
 {
     public string rcPath = "C:\\Program Files\\Capturing Reality\\RealityCapture\\RealityCapture.exe";
     public string imageFolder = "C:\\CapturedImages"; //핸드폰으로 바꾼다면 경로가 변경되어야 한다.

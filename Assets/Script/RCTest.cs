@@ -5,18 +5,20 @@ using UnityEngine.UIElements;
 using UnityEditor.PackageManager;
 using System;
 using UnityEditor.SearchService;
+using UnityEngine.Networking;
+using System.Collections;
 
-public class RCTest : MonoBehaviour
+public class RCTest : MonoBehaviour //서버에서 처리 시 불필요한 스크립트 
 {
-    string scriptPath = @"C:/Work/myscript.rcscript";
+    private string scriptPath;
 
     private void Start()
     {
-        CreateRealityCaptureScript2();
-        UnityEngine.Debug.Log("1");
+        scriptPath = AppData.Instance.ScriptPath;
+        CreateRealityCaptureScript();
     }
 
-    private void CreateRealityCaptureScript2()
+    private void CreateRealityCaptureScript()
     {
         string outputDir = @"C:/Work";
         if (!Directory.Exists(outputDir))
