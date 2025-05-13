@@ -11,23 +11,30 @@ public class AppSceneManger : Singlton<AppSceneManger>
     private string scene1_name = "MainScene";
     private string scene2_name = "CameraScene";
     private string scene3_name = "3DModelScene";
+    private string scene4_name = "MR_CameraScene";
 
     protected override void Awake()
     {
         base.Awake();
-
-        currentSceneName = SceneManager.GetActiveScene().name;
+        currentSceneName = SceneManager.GetActiveScene().name; 
+        Debug.Log("AppSceneManger Initialized");
     }
 
-    public void ChangeScene(int sceneNum)//이후에 비동기나 동기의 방식을 선택해서 변경이 필요하지만 현재는 기능을 우선해서 제작
+    protected override void Start()
+    {
+        base.Start();
+    }
+
+    public void ChangeScene(Scene_name sceneNum)//이후에 비동기나 동기의 방식을 선택해서 변경이 필요하지만 현재는 기능을 우선해서 제작
     {
         switch (sceneNum)
         {
-            case 0: SceneManager.LoadScene(scene0_name); return;
-            case 1: SceneManager.LoadScene(scene1_name); return;
-            case 2: SceneManager.LoadScene(scene2_name); return;
-            case 3: SceneManager.LoadScene(scene3_name); return;
-            default: ExitApp(); return;
+            case Scene_name.LoginScene: SceneManager.LoadScene(scene0_name); return;
+            case Scene_name.MainScene: SceneManager.LoadScene(scene1_name); return;
+            case Scene_name.CameraScene: SceneManager.LoadScene(scene2_name); return;
+            case Scene_name.ModelScene: SceneManager.LoadScene(scene3_name); return;
+            case Scene_name.MRScene: SceneManager.LoadScene(scene4_name); return;
+            default: ExitApp(); return; //조건을 더 추가해서 예외가 발생하면 종료되는 문제를 제거해야함
         }
     }
 

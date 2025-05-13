@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-public class MugAutoPlacer : AssetPostprocessor
+public class sdf : AssetPostprocessor
 {
 	// FBX 파일 임포트 후 한 번에 처리되는 훅
 	static void OnPostprocessAllAssets(

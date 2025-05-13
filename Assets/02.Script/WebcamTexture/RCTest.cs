@@ -14,7 +14,6 @@ public class RCTest : MonoBehaviour //서버에서 처리 시 불필요한 스크립트
 
     private void Start()
     {
-        scriptPath = AppData.Instance.ScriptPath;
         CreateRealityCaptureScript();
     }
 
@@ -94,6 +93,6 @@ public class RCTest : MonoBehaviour //서버에서 처리 시 불필요한 스크립트
             UnityEngine.Debug.LogError("RealityCapture Error:\n" + error);
         }
 
-        AppSceneManger.Instance.ChangeScene(3);
+        AppSceneManger.Instance.ChangeScene(Scene_name.ModelScene);
     }
 }

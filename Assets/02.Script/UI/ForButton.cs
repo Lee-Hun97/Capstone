@@ -6,6 +6,6 @@ public class ForButton : MonoBehaviour
 {
     public void CallChangeSceneFunction(int i)
     {
-        AppSceneManger.Instance.ChangeScene(i);
+        AppSceneManger.Instance.ChangeScene((Scene_name)i);
     }
 }

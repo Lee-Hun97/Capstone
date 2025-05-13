@@ -33,8 +33,7 @@ public class LoginManger : MonoBehaviour
         loginData.ID = IDInputField.text;
         loginData.PassWord = PassWordInputField.text;
 
-        //StartCoroutine(SendPlayerData(loginData.ID, loginData.PassWord));
-        AppSceneManger.Instance.ChangeScene(1);//성공했을 때만 이동
+        StartCoroutine(SendPlayerData(loginData.ID, loginData.PassWord));
     }
 
     public IEnumerator SendPlayerData(string username, string password)
@@ -56,6 +55,8 @@ public class LoginManger : MonoBehaviour
         {
             isLogined = true;
             Debug.Log("Login Success: " + request.downloadHandler.text);
+            AppData.Instance.SetInfo(loginData.ID, loginData.PassWord);//로그인 성공 시 서버에서 데이터를 가져옴
+            AppSceneManger.Instance.ChangeScene(Scene_name.LoginScene);//성공했을 때만 이동
         }
         else
         {
