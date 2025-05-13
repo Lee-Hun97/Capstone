@@ -379,7 +379,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &2026370840
+--- !u!1001 &1888778542
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -397,7 +397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1a7233fd7dccd1a4b92d0374187c0d61, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.2
+      value: 0.523
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1a7233fd7dccd1a4b92d0374187c0d61, type: 3}
       propertyPath: m_LocalRotation.w
@@ -431,6 +431,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Basic Ceramic
       objectReference: {fileID: 0}
+    - target: {fileID: 9208015718778555959, guid: 1a7233fd7dccd1a4b92d0374187c0d61, type: 3}
+      propertyPath: m_MaskInteraction
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -443,4 +447,4 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 29323459}
   - {fileID: 653179902}
-  - {fileID: 2026370840}
+  - {fileID: 1888778542}

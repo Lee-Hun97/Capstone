@@ -115,23 +115,30 @@ public class CombinedCupGuide : MonoBehaviour
 
 	public void GenerateGuide(float targetVolume_ml)
 	{
-		Debug.Log($"CombinedCupGuide.GenerateGuide 호출: {targetVolume_ml} mL");
+		// 1) 실세계 부피(m³)
+		float worldV = Mathf.Max(0f, targetVolume_ml * 1e-6f);
 
-		if (circleGuidelineObj != null)
-			Destroy(circleGuidelineObj);
+		// 2) 로컬 스케일로 인한 부피 배율
+		Vector3 s = transform.localScale;
+		float scaleVolume = s.x * s.y * s.z;
 
-		float target_m3 = Mathf.Max(0f, targetVolume_ml * 1e-6f);
-		float maxV = cumVolumes.Last();
-		if (target_m3 > maxV) target_m3 = maxV;
+		// 3) 로컬 좌표계에서의 목표 부피
+		float localTargetV = worldV / scaleVolume;
 
-		int idx = Array.FindIndex(cumVolumes, v => v >= target_m3);
+		// 4) 누적 프로파일 최대값 클램프
+		float maxLocalV = cumVolumes.Last();
+		if (localTargetV > maxLocalV) localTargetV = maxLocalV;
+
+		// 5) 로컬부피 배열에서 인덱스 찾기
+		int idx = Array.FindIndex(cumVolumes, v => v >= localTargetV);
 		idx = Mathf.Clamp(idx, 1, sampleCount - 1);
 
-		float v0 = cumVolumes[idx - 1];
-		float v1 = cumVolumes[idx];
-		float t = (v1 > v0) ? (target_m3 - v0) / (v1 - v0) : 0f;
+		// 6) 선형 보간해 정확한 hLocal 계산
+		float v0 = cumVolumes[idx - 1], v1 = cumVolumes[idx];
+		float t = (v1 > v0) ? (localTargetV - v0) / (v1 - v0) : 0f;
 		float hLocal = Mathf.Lerp(heights[idx - 1], heights[idx], t);
 
+		// 7) 로컬 hLocal 그대로 가이드라인 그리기
 		DrawSectionHull(hLocal);
 	}
 
@@ -145,8 +152,17 @@ public class CombinedCupGuide : MonoBehaviour
 			return;
 		}
 
+		if (circleGuidelineObj != null)
+			Destroy(circleGuidelineObj);
+
+		// 새 GameObject 생성
 		circleGuidelineObj = new GameObject("CircleGuideline");
-		circleGuidelineObj.transform.SetParent(transform, false);
+
+		// ★ 여기서 머그(this) 오브젝트의 자식으로 등록!  
+		//    worldPositionStays = false 로 해야 로컬 좌표 그대로 붙습니다.
+		circleGuidelineObj.transform.SetParent(this.transform, false);
+
+		// LineRenderer 세팅 (로컬 공간)
 		var lr = circleGuidelineObj.AddComponent<LineRenderer>();
 		lr.useWorldSpace = false;
 		lr.loop = true;
@@ -155,9 +171,11 @@ public class CombinedCupGuide : MonoBehaviour
 		lr.endWidth = guidelineWidth;
 		lr.material = guidelineMat;
 
+		// 로컬 좌표 그대로 찍어 주면,
+		// 머그 오브젝트의 위치/회전/스케일이 자동으로 반영됩니다.
 		for (int i = 0; i < hull2D.Count; i++)
 		{
-			var p = hull2D[i];
+			Vector2 p = hull2D[i];
 			lr.SetPosition(i, new Vector3(p.x, hLocal, p.y));
 		}
 	}
