@@ -2,10 +2,7 @@ using UnityEngine;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine.UIElements;
-using UnityEditor.PackageManager;
 using System;
-using UnityEditor.SearchService;
-using UnityEngine.Networking;
 using System.Collections;
 
 public class RCTest : MonoBehaviour //서버에서 처리 시 불필요한 스크립트 

@@ -10,25 +10,52 @@ public class AppData : Singlton<AppData>
 {
     //모든 데이터를 AppData가 가지고 있어서 변경이 편리하고 다른 곳에서 불필요한 데이터를 가지지않도록 구성
     //가능한 모든 데이터를 이곳에 모아준다.
-    private string serverURL = "http://<서버IP>:5000/upload";//서버 이름으로 변경 필요
-    private string serverModelUrl = ""; // 서버에 있는 .obj 경로
-    private string captureImageFolderPath = Path.Combine(Application.temporaryCachePath, "CapturedImage");
+    private string serverURL = "http://172.19.31.77:5000";
+    private string serverLoginURL = "http://172.19.31.77:5000/login";
+    private string serverModelsTimeStampURL = "http://172.19.31.77:5000/get_saved_models"; //{ id }
+    private string serverModelGetURL = "http://127.0.0.1:5000/get_model"; //{ name, id }
+    private string serverImageSaveURL = "http://127.0.0.1:5000/upload"; ////{ id, filepath }
+    private string createURL = "http://127.0.0.1:5000/latest_upload"; //{ id }
+    private string serverModelSaveURL = "http://127.0.0.1:5000/save_model"; //{ name, id }
+
+    private string captureImageFolderPath = Path.Combine(Application.temporaryCachePath, "CapturedImages");
     private string user3DModelPath = Path.Combine(Application.persistentDataPath, "User3DModels");//모델의 경우 재사용을 해야하기에 삭제의 위험이 적은 persistentpath 사용
 
     //중요 데이터이기에 읽기 전용으로, 변경이 필요한 값은 set도 설정
     public string ServerURL { get { return serverURL; } }
-    public string CaptureImageFolderPath { get { return captureImageFolderPath; } }
-    public string User3DModelPath { get { return user3DModelPath; } }
+    public string ServerLoginURL { get { return serverLoginURL; } }
+
+    public string ServerImageSaveURL { get { return captureImageFolderPath; } }
+    public string ServerModelGetURL { get { return user3DModelPath; } }
+    public string ServerModelSaveURL {  get { return serverModelSaveURL; } }
 
     public string ID;
     public string PW;
-    public GameObject[] GameObjects = new GameObject[3];//사용자에게 제공할 3개의 모델 저장 기능
-    public GameObject[] loadedModels = new GameObject[3]; // 받아온 GameObjects
+
+    private string[] timeStamps = new string[3];
+
+    public loadedModelsInfo[] C_loadedmodelsInfo = new loadedModelsInfo[3];
+
+    [System.Serializable]
+    public class loadedModelsInfo
+    {
+        public GameObject gameObject = new GameObject();
+        public string path = "";
+    }
+
+    [System.Serializable]
+    public class ResultResponse
+    {
+        public string status;
+        public string[] result;  // 혹은 List<string>
+    }
 
     protected override void Awake()
     {
         base.Awake();
         Debug.Log("AppData Initialized");
+
+        CheckFolders();
     }
 
     protected override void Start()
@@ -36,15 +63,24 @@ public class AppData : Singlton<AppData>
         base.Start();
     }
 
+    private void CheckFolders()
+    {
+        if (!Directory.Exists(user3DModelPath))
+        {
+            Directory.CreateDirectory(user3DModelPath);
+        }
+        if (!Directory.Exists(captureImageFolderPath))
+        {
+            Directory.CreateDirectory(captureImageFolderPath);
+        }
+    }
+
     public void SetInfo(string id, string pw)
     {
         ID = id;
         PW = pw;
 
-        for(int i =0;i<3; i++)
-        {
-            StartCoroutine(LoadModelFromServer(serverModelUrl, i));
-        }
+        StartCoroutine(GetModelsTimestampFromFlask());
     }
 
     //private void SetModelData(GameObject[] gameObjects)//사용자의 저장데이터를 불러옴
@@ -55,30 +91,79 @@ public class AppData : Singlton<AppData>
     //    }
     //}
 
-    IEnumerator LoadModelFromServer(string url, int index)
+    IEnumerator GetModelsTimestampFromFlask()
     {
-        UnityWebRequest request = UnityWebRequest.Get(url);
-        yield return request.SendWebRequest();
+        WWWForm form = new WWWForm();
+        form.AddField("user_id", ID);
+        int i = 0;
 
-        if (request.result == UnityWebRequest.Result.Success)
+        using (UnityWebRequest request = UnityWebRequest.Post(serverModelsTimeStampURL, form))
         {
-            string objData = request.downloadHandler.text;
+            yield return request.SendWebRequest();
 
-            string tempPath = user3DModelPath + "/tempModel_" + index + ".obj";
-            System.IO.File.WriteAllText(tempPath, objData);
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string json = request.downloadHandler.text;
+                Debug.Log("받은 JSON: " + json);
+
+                ResultResponse response = JsonUtility.FromJson<ResultResponse>(json);
+                
+                foreach (string timestamp in response.result)
+                {
+                    timeStamps[i] = timestamp;
+                }
+            }
+            else
+            {
+                Debug.LogError("서버 요청 실패: " + request.error);
+            }
         }
-        else
+
+        for (int n = 0; n < 3; n++)
         {
-            Debug.LogError($"모델 {index} 다운로드 실패: {request.error}");
+            StartCoroutine(LoadModelFromServer(serverModelGetURL, n));
         }
     }
 
-    void OnApplicationQuit()
+    IEnumerator LoadModelFromServer(string serverModelUrl, int index)
+    {
+        string timestamp = timeStamps[index];
+        string url = $"{serverModelUrl}?user_id={ID}&timestamp={timestamp}";
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string objData = request.downloadHandler.text;
+
+                // 저장
+                string savePath = Path.Combine(Application.temporaryCachePath, index + ".obj");
+                System.IO.File.WriteAllText(savePath, objData);
+
+                // 파싱
+                OBJLoader loader = new OBJLoader();
+
+                C_loadedmodelsInfo[index].gameObject = loader.Load(savePath);
+                C_loadedmodelsInfo[index].path = savePath;
+            }
+            else
+            {
+                Debug.LogError("서버에서 모델 다운로드 실패: " + request.error);
+            }
+        }
+    }
+
+    void OnApplicationQuit()//만약을 위한 삭제확인
     {
         if (Directory.Exists(captureImageFolderPath))
         {
             Directory.Delete(captureImageFolderPath, true);
-            //Debug.Log("임시 이미지 폴더 삭제");
+        }
+        if (Directory.Exists(user3DModelPath))
+        {
+            Directory.Delete(user3DModelPath, true);
         }
     }
     

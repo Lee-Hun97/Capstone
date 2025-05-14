@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class RuntimeOBJImporter : MonoBehaviour
 {
-    private string folderPath = @"C:/Work/Output";
+    private string folderPath = "";
     private string modelFileName = "model.obj";
     private string modelmtlFileName = "model.mtl";
 
@@ -14,6 +14,7 @@ public class RuntimeOBJImporter : MonoBehaviour
 
     void Start()
     {
+        folderPath = AppData.Instance.ServerModelGetURL;
         string modelPath = Path.Combine(folderPath, modelFileName);
         string mtlpath = Path.Combine(Application.streamingAssetsPath, modelmtlFileName);
 

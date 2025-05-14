@@ -5,28 +5,27 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine.Networking;
+using System;
 
 public class WebCamTexture : MonoBehaviour
 {
     [SerializeField] private RawImage previewImage;   // 카메라 실시간 화면 표시
     [SerializeField] private RectTransform elbum; //recttransform은 ui를 위해 -> 피봇처럼 어디든 적용할 수 있게, 기존의 transform은 실제 씬에서 적용하기 위해
     [SerializeField] private Image lastCaptureImage; // 표시해줄 마지막 촬영한 이미지
+    [SerializeField] private GameObject loadingImage; // 로딩시 표시해줄 이미지 -> 나중에 popupUI로 빼면 좋을듯?
     [SerializeField] private TextMeshProUGUI previewText; //현재 캡쳐한 이미지 수
     //public Transform galleryContent;// 갤러리의 부모 객체
     //public GameObject imagePrefab;  // 갤러리에 추가할 이미지 프리팹, 제거 할 수 있어야 함
 
-    private string folderPath;
+    private string persistentFolderPath;
+    private string temFolderPath;
     private UnityEngine.WebCamTexture webCamTexture;
     [SerializeField]private List<Texture2D> capturedImages = new List<Texture2D>();
 
     private void Start()
     {
-        folderPath = Application.persistentDataPath;
-
-        if (!Directory.Exists(folderPath))
-        {
-            Directory.CreateDirectory(folderPath);
-        }
+        persistentFolderPath = AppData.Instance.ServerModelGetURL;
+        temFolderPath = AppData.Instance.ServerImageSaveURL;
 
         // 웹캠 시작
         webCamTexture = new UnityEngine.WebCamTexture();
@@ -43,7 +42,7 @@ public class WebCamTexture : MonoBehaviour
 
         // 리스트에 저장 후 미리보기 업데이트
         capturedImages.Add(photo);
-        Debug.Log("Shot");
+
         ChangeElbumInfo(photo);
     }
 
@@ -51,16 +50,15 @@ public class WebCamTexture : MonoBehaviour
     {
         Sprite sprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), new Vector2(0.5f, 0.5f));
         lastCaptureImage.sprite = sprite;
-        previewText.text = $"{ capturedImages.Count}";
+        previewText.text = $"{capturedImages.Count}";
         LayoutRebuilder.ForceRebuildLayoutImmediate(elbum);
     }
 
-    public void SendToServer()//정확하게는 캡쳐한 이미지 저장
+    public void SaveandSendToServer()
     {
         if (capturedImages != null)
         {
             StartCoroutine(SendImagesToServer());
-            //ClearImageFoldaer(); //불필요한 데이터는 제거
         }
         else
         {
@@ -70,7 +68,9 @@ public class WebCamTexture : MonoBehaviour
 
     private IEnumerator SendImagesToServer()
     {
-        WWWForm form = new WWWForm();
+        WWWForm form = new WWWForm();//기본 폼
+        string serverURL = AppData.Instance.ServerImageSaveURL;//API 사용 주소
+        form.AddField("user_id", AppData.Instance.ID);//폼의 추가 정보
 
         for (int i = 0; i < capturedImages.Count; i++)
         {
@@ -82,26 +82,36 @@ public class WebCamTexture : MonoBehaviour
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
+        {
             Debug.Log("Upload successful!");
+            StartCoroutine(RunRCinServer());
+        }
         else
             Debug.LogError("Upload failed: " + request.error);
     }
 
-    private void OnApplicationQuit()//앱 종료 시 수행하는 명령어
+    private IEnumerator RunRCinServer()
     {
-        //ClearImageFoldaer();
-    }
+        string runURL = "http://127.0.0.1:5000/latest_upload";
+        WWWForm form = new WWWForm();
 
-    public void ClearImageFoldaer()//TODO : 캡쳐 폴더 초기화, 임시 앱 데이터를 삭제 등의 기능 추가
-    {
-        if (Directory.Exists(folderPath))
+        form.AddField("user_id", AppData.Instance.ID);
+
+        loadingImage.SetActive(true);
+        
+        UnityWebRequest request = UnityWebRequest.Post(AppData.Instance.ServerURL, form);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
         {
-            string[] files = Directory.GetFiles(folderPath);
-            foreach (string file in files)
-            {
-                File.Delete(file);
-            }
+            loadingImage.SetActive(false);
+            Debug.Log("3D Modeling Finished!");
+
+            yield return new WaitForSeconds(1f);
+            AppSceneManger.Instance.ChangeScene(Scene_name.ModelScene);
         }
+        else
+            Debug.LogError("Upload failed: " + request.error);
     }
 
     private void OnDestroy()

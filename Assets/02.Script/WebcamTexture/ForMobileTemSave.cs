@@ -17,12 +17,14 @@ public class ForMobileTemSave : MonoBehaviour
     //public GameObject imagePrefab;  // 갤러리에 추가할 이미지 프리팹
 
     private UnityEngine.WebCamTexture webCamTexture;
-    private string folderPath = @"C:/Work/CapturedImages";//이 경로도 앱으로 제작 시 변경
+    private string folderPath = "";
     [SerializeField] private List<Texture2D> capturedImages = new List<Texture2D>();
 
     // Start is called before the first frame update
     void Start()
     {
+        folderPath = AppData.Instance.ServerImageSaveURL;
+
         //촬영을 위한 웹캠 시작
         webCamTexture = new UnityEngine.WebCamTexture();
         previewImage.texture = webCamTexture;
