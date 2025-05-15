@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.DefaultCompany.Capstone">
+
+    <!-- 인터넷 권한 (FBX 다운로드용) -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- 카메라 권한 (AR용) -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- ARCore 하드웨어 필수 선언 -->
+    <uses-feature android:name="android.hardware.camera.ar"
+                  android:required="true"/>
+
+    <!-- UnityPlayerActivity가 여기에 매핑됩니다 -->
+    <application
+        android:label="@string/app_name"
+        android:icon="@mipmap/app_icon">
+        <activity android:name="com.unity3d.player.UnityPlayerActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait"
+                  android:launchMode="singleTask"
+                  android:clearTaskOnLaunch="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
