@@ -252,10 +252,10 @@ PlayerSettings:
   templatePackageId: com.unity.template.3d@8.1.3
   templateDefaultScene: Assets/Scenes/SampleScene.unity
   useCustomMainManifest: 1
-  useCustomLauncherManifest: 0
-  useCustomMainGradleTemplate: 0
+  useCustomLauncherManifest: 1
+  useCustomMainGradleTemplate: 1
   useCustomLauncherGradleManifest: 0
-  useCustomBaseGradleTemplate: 0
+  useCustomBaseGradleTemplate: 1
   useCustomGradlePropertiesTemplate: 0
   useCustomGradleSettingsTemplate: 0
   useCustomProguardFile: 0
@@ -954,4 +954,4 @@ PlayerSettings:
   hmiLoadingImage: {fileID: 0}
   platformRequiresReadableAssets: 0
   virtualTexturingSupportEnabled: 0
-  insecureHttpOption: 0
+  insecureHttpOption: 2

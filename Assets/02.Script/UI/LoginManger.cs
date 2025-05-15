@@ -11,8 +11,8 @@ public class LoginManger : MonoBehaviour
 {
     private string serverURL;
     [SerializeField]private TMP_InputField IDInputField;
-    [SerializeField] private TMP_InputField PassWordInputField;
-    [SerializeField] private Image image;
+    [SerializeField]private TMP_InputField PassWordInputField;
+    [SerializeField]private Image image;
 
     [System.Serializable]
     public class LoginData//json 형태로 전잘해 줘야하므로 클래스 형식, 이후에 데이터를 추가할수 있음
@@ -51,14 +51,19 @@ public class LoginManger : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         request.timeout = 10;
+        //request.chunkedTransfer = false;
 
-        image.color = Color.red;
+        image.color = Color.white;
 
         // 요청 전송
         yield return request.SendWebRequest();
 
         image.color = Color.blue;
-        if (request.result == UnityWebRequest.Result.Success)
+        if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            image.color = Color.red;
+        }
+        else if (request.result == UnityWebRequest.Result.Success)
         {
             isLogined = true;
             Debug.Log("Login Success: " + request.downloadHandler.text);
