@@ -1,3 +1,7 @@
 uploads/
 outputs/
+test1/
+test2/
+tests/
 __pycache__/
+downloaded_modelbundle
