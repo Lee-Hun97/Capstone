@@ -6,41 +6,46 @@ using UnityEngine;
 
 public class RuntimeOBJImporter : MonoBehaviour
 {
-    private string folderPath = "";
     private string modelFileName = "model.obj";
-    private string modelmtlFileName = "model.mtl";
+    private string materialResourcePath = "Materials/Default_Matarial";
 
     [SerializeField]private ModelAdjustment modelAdjustment;
 
     void Start()
     {
-        folderPath = AppData.Instance.ServerModelGetURL;
-        string modelPath = Path.Combine(folderPath, modelFileName);
-        string mtlpath = Path.Combine(Application.streamingAssetsPath, modelmtlFileName);
+        string modelPath = Path.Combine(AppData.Instance.User3DModelPath, modelFileName);
 
-        LoadModel(modelPath, mtlpath);
+        LoadModel(modelPath);
     }
 
-    void LoadModel(string path, string mtlpath)
+    void LoadModel(string path)//*** 서버에서 어떤방식으로 데이터를 전달해줄것이냐에 따라서 구성이 달라짐.
     {
         OBJLoader importer = new OBJLoader();
-        GameObject created3DModel = importer.Load(path,mtlpath);
+
+        GameObject created3DModel = importer.Load(path);
+        Material loadedMaterial = Resources.Load<Material>(materialResourcePath);
 
         created3DModel.transform.position = Vector3.zero;
 
         MeshFilter[] meshFilters = created3DModel.GetComponentsInChildren<MeshFilter>();
+        MeshRenderer[] meshRenderers = created3DModel.GetComponentsInChildren<MeshRenderer>();
+
+        foreach (var renderer in meshRenderers)
+        {
+            renderer.material = loadedMaterial;
+        }
 
         foreach (MeshFilter mf in meshFilters)
         {
             if (mf.mesh != null)
             {
-                // 해당 자식에 MeshCollider 붙이기
+                // 해당 자식에 MeshCollider 붙이기, 일단은 대충 생성
                 MeshCollider collider = mf.gameObject.AddComponent<MeshCollider>();
                 collider.sharedMesh = mf.mesh;
                 collider.convex = false; // convex 필요 여부에 따라 설정
             }
         }
-
+        
         //MeshCollider collider = created3DModel.AddComponent<MeshCollider>();
         //collider.convex = true; // 복잡한 메시일 경우 true로 하면 물리 충돌이 불안정해질 수 있지만 true여야 충돌 가능
 

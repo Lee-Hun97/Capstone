@@ -34,7 +34,7 @@ public class ModelAdjustment : MonoBehaviour
             // 이전 프레임의 터치 포인트 거리
             float prevDist = Vector2.Distance(touch0.position - touch0.deltaPosition, touch1.position - touch1.deltaPosition);
 
-            float deltaDist = currentDist - prevDist;
+            float deltaDist = (currentDist - prevDist)/currentDist;
 
             // 확대/축소
             float newScale = mainCamera.transform.position.z + deltaDist * zoomSpeed;

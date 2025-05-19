@@ -5,34 +5,36 @@ using Dummiesman;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 public class AppData : Singlton<AppData>
 {
     //모든 데이터를 AppData가 가지고 있어서 변경이 편리하고 다른 곳에서 불필요한 데이터를 가지지않도록 구성
     //가능한 모든 데이터를 이곳에 모아준다.
-    private string serverURL = "http://172.19.31.77:5000";
-    private string serverLoginURL = "http://172.19.31.77:5000/login";
-    private string serverModelsTimeStampURL = "http://172.19.31.77:5000/get_saved_models"; //{ id }
-    private string serverModelGetURL = "http://127.0.0.1:5000/get_model"; //{ name, id }
-    private string serverImageSaveURL = "http://127.0.0.1:5000/upload"; ////{ id, filepath }
-    private string createURL = "http://127.0.0.1:5000/latest_upload"; //{ id }
-    private string serverModelSaveURL = "http://127.0.0.1:5000/save_model"; //{ name, id }
+    private string serverURL = "http://172.19.3.57:5000";//서버에 따라서 해당 값을 바꿔줘야한다. Flask서버를 열때 url을 체크***
 
     private string captureImageFolderPath = Path.Combine(Application.temporaryCachePath, "CapturedImages");
     private string user3DModelPath = Path.Combine(Application.persistentDataPath, "User3DModels");//모델의 경우 재사용을 해야하기에 삭제의 위험이 적은 persistentpath 사용
 
     //중요 데이터이기에 읽기 전용으로, 변경이 필요한 값은 set도 설정
     public string ServerURL { get { return serverURL; } }
-    public string ServerLoginURL { get { return serverLoginURL; } }
+    public string ServerLoginURL { get { return serverURL + "/login" ; } }//json 데이터를 전달
+    public string ServerImageSaveURL { get { return serverURL + "/upload"; } }//{ id, filepath }
+    public string ServerModelGetURL { get { return serverURL + "/get_model_by_name"; } }//{ name, id }
+    public string ServerModelURL { get { return serverURL + "/get_model"; } }//{ name, id }
+    public string ServerModelSaveURL {  get { return serverURL + "/save_model"; } }//{ name, id }
+    public string GetTimeStampURL {  get { return serverURL + "/latest_upload"; } }//{ id }
+    public string ServerModelsTimeStampURL {  get { return serverURL + "/get_saved_models"; } }//{ id
+    public string RunRCURL { get { return serverURL + "/process_rc"; } }//{ id, timestamp }
+    public string CaptureImageFolderPath { get { return captureImageFolderPath; } }
+    public string User3DModelPath { get { return user3DModelPath; } }
 
-    public string ServerImageSaveURL { get { return captureImageFolderPath; } }
-    public string ServerModelGetURL { get { return user3DModelPath; } }
-    public string ServerModelSaveURL {  get { return serverModelSaveURL; } }
-
+    private string user_id = "test1";
     public string ID;
     public string PW;
 
     private string[] timeStamps = new string[3];
+    public string CurentTimeStamp = "";
 
     public loadedModelsInfo[] C_loadedmodelsInfo = new loadedModelsInfo[3];
 
@@ -44,10 +46,18 @@ public class AppData : Singlton<AppData>
     }
 
     [System.Serializable]
+    public class ResultItem
+    {
+        public string created_at;
+        public string name;
+        public string timestamp;
+    }
+
+    [System.Serializable]
     public class ResultResponse
     {
         public string status;
-        public string[] result;  // 혹은 List<string>
+        public List<ResultItem> models;
     }
 
     protected override void Awake()
@@ -61,6 +71,11 @@ public class AppData : Singlton<AppData>
     protected override void Start()
     {
         base.Start();
+    }
+
+    public string GetUserID()
+    {
+        return user_id;
     }
 
     private void CheckFolders()
@@ -93,11 +108,10 @@ public class AppData : Singlton<AppData>
 
     IEnumerator GetModelsTimestampFromFlask()
     {
-        WWWForm form = new WWWForm();
-        form.AddField("user_id", ID);
         int i = 0;
+        string url = $"{ServerModelsTimeStampURL}?user_id={ID}";
 
-        using (UnityWebRequest request = UnityWebRequest.Post(serverModelsTimeStampURL, form))
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
 
@@ -106,11 +120,11 @@ public class AppData : Singlton<AppData>
                 string json = request.downloadHandler.text;
                 Debug.Log("받은 JSON: " + json);
 
-                ResultResponse response = JsonUtility.FromJson<ResultResponse>(json);
-                
-                foreach (string timestamp in response.result)
+                ResultResponse results = JsonConvert.DeserializeObject<ResultResponse>(json);
+                foreach (var item in results.models)
                 {
-                    timeStamps[i] = timestamp;
+                    timeStamps[i] = item.timestamp;
+                    i++;
                 }
             }
             else
@@ -119,9 +133,11 @@ public class AppData : Singlton<AppData>
             }
         }
 
+
         for (int n = 0; n < 3; n++)
         {
-            StartCoroutine(LoadModelFromServer(serverModelGetURL, n));
+            yield return new WaitForSeconds(5f);
+            StartCoroutine(LoadModelFromServer(ServerModelURL, n));
         }
     }
 
@@ -154,6 +170,8 @@ public class AppData : Singlton<AppData>
             }
         }
     }
+
+    
 
     void OnApplicationQuit()//만약을 위한 삭제확인
     {
