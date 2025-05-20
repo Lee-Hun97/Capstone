@@ -6,7 +6,7 @@ import subprocess
 import time
 import shutil
 from subprocess import Popen, PIPE, STDOUT
-from get_ScaleFactor_final import get_scale_factor
+from get_ScaleFactor import get_scale_factor
 
 camera_matrix = np.array([
     [0, 0, 0],
