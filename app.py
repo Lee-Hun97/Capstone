@@ -244,7 +244,7 @@ def get_bundle():
     if not is_valid_user(user_id):
         return jsonify({'status': 'fail', 'message': '존재하지 않는 유저'}), 403
 
-    bundle_path = os.path.join(r"E:\unity\My project\AssetBundles", "modelbundle")
+    bundle_path = os.path.abspath(os.path.join('outputs', f'user_{user_id}', timestamp, 'model.bundle'))
 
     if not os.path.exists(bundle_path):
         return jsonify({'status': 'fail', 'message': 'AssetBundle 없음'}), 404
@@ -276,7 +276,9 @@ def build_assetbundle(user_id, timestamp):
         "-quit",
         "-projectPath", UNITY_PROJECT,
         "-executeMethod", "AssetBundleBuilder.BuildModelAssetBundle",
-        "-logFile", LOG_PATH
+        "-logFile", LOG_PATH,
+        "--user_id", user_id,
+        "--timestamp", timestamp
     ]
 
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
