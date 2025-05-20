@@ -19,19 +19,19 @@ public class AppData : Singlton<AppData>
     //중요 데이터이기에 읽기 전용으로, 변경이 필요한 값은 set도 설정
     public string ServerURL { get { return serverURL; } }
     public string ServerLoginURL { get { return serverURL + "/login" ; } }//json 데이터를 전달
-    public string ServerImageSaveURL { get { return serverURL + "/upload"; } }//{ id, filepath }
-    public string ServerModelGetURL { get { return serverURL + "/get_model_by_name"; } }//{ name, id }
+    public string ServerImageUploadURL { get { return serverURL + "/upload"; } }//{ id, filepath }
+    public string ServerModelGetbyNameURL { get { return serverURL + "/get_model_by_name"; } }//{ name, id }
     public string ServerModelURL { get { return serverURL + "/get_model"; } }//{ name, id }
     public string ServerModelSaveURL {  get { return serverURL + "/save_model"; } }//{ name, id }
     public string GetTimeStampURL {  get { return serverURL + "/latest_upload"; } }//{ id }
-    public string ServerModelsTimeStampURL {  get { return serverURL + "/get_saved_models"; } }//{ id
+    public string ServerGetSavedModelsTimestampURL {  get { return serverURL + "/get_saved_models"; } }//{ id
     public string RunRCURL { get { return serverURL + "/process_rc"; } }//{ id, timestamp }
     public string CaptureImageFolderPath { get { return captureImageFolderPath; } }
     public string User3DModelPath { get { return user3DModelPath; } }
 
-    private string user_id = "test1";
-    public string ID;
-    public string PW;
+    private string user_id = "";
+    public string EMAIL;
+    public string PW;//전부 private으로 변경필요
 
     private string[] timeStamps = new string[3];
     public string CurentTimeStamp = "";
@@ -90,9 +90,10 @@ public class AppData : Singlton<AppData>
         }
     }
 
-    public void SetInfo(string id, string pw)
+    public void SetInfo(string email, string pw, string userid)
     {
-        ID = id;
+        user_id = userid;
+        EMAIL = email;
         PW = pw;
 
         StartCoroutine(GetModelsTimestampFromFlask());
@@ -109,7 +110,7 @@ public class AppData : Singlton<AppData>
     IEnumerator GetModelsTimestampFromFlask()
     {
         int i = 0;
-        string url = $"{ServerModelsTimeStampURL}?user_id={ID}";
+        string url = $"{ServerGetSavedModelsTimestampURL}?user_id={user_id}";
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -144,7 +145,7 @@ public class AppData : Singlton<AppData>
     IEnumerator LoadModelFromServer(string serverModelUrl, int index)
     {
         string timestamp = timeStamps[index];
-        string url = $"{serverModelUrl}?user_id={ID}&timestamp={timestamp}";
+        string url = $"{serverModelUrl}?user_id={user_id}&timestamp={timestamp}";
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {

@@ -19,6 +19,14 @@ public class LoginManger : MonoBehaviour
         public string email;
         public string password;
     }
+
+    [System.Serializable]
+    public class LoginResponse
+    {
+        public string status;
+        public string user_id;
+        public string message;
+    }
     private LoginData loginData;//로그인을 위한 로그인 데이터 선언
 
     private void Start()
@@ -44,7 +52,7 @@ public class LoginManger : MonoBehaviour
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
-        request.timeout = 10;
+        request.timeout = 10;//10초 초과 시 로그인 오류로 판단
         //request.chunkedTransfer = false;
 
         loginCheckImage.color = Color.white;
@@ -59,8 +67,10 @@ public class LoginManger : MonoBehaviour
         }
         else if (request.result == UnityWebRequest.Result.Success)
         {
+            LoginResponse response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
+
             Debug.Log("Login Success: " + request.downloadHandler.text);
-            AppData.Instance.SetInfo(loginData.email, loginData.password);//로그인 성공 시 서버에서 데이터를 가져와서 저장
+            AppData.Instance.SetInfo(loginData.email, loginData.password, response.user_id);//로그인 성공 시 서버에서 데이터를 가져와서 저장
             AppSceneManger.Instance.ChangeScene(Scene_name.MainScene);//성공했을 때만 이동
         }
         else

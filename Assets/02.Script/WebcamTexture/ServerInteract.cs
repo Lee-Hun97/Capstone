@@ -12,7 +12,7 @@ public class ServerInteract : MonoBehaviour
     void Start()
     {
         serverURL = AppData.Instance.ServerURL;
-        temImageFolderPath = AppData.Instance.ServerImageSaveURL;
+        temImageFolderPath = AppData.Instance.ServerImageUploadURL;
     }
 
     public void SendImageToServer()

@@ -23,7 +23,7 @@ public class ForMobileTemSave : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        folderPath = AppData.Instance.ServerImageSaveURL;
+        folderPath = AppData.Instance.ServerImageUploadURL;
 
         //√‘øµ¿ª ¿ß«— ¿•ƒ∑ Ω√¿€
         webCamTexture = new UnityEngine.WebCamTexture();

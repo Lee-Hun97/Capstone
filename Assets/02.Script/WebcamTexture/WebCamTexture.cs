@@ -34,8 +34,8 @@ public class WebCamTexture : MonoBehaviour
 
     private void Start()
     {
-        persistentFolderPath = AppData.Instance.ServerModelGetURL;
-        temFolderPath = AppData.Instance.ServerImageSaveURL;
+        persistentFolderPath = AppData.Instance.ServerModelGetbyNameURL;
+        temFolderPath = AppData.Instance.ServerImageUploadURL;
 
         // À¥Ä· ½ÃÀÛ
         webCamTexture = new UnityEngine.WebCamTexture();
@@ -80,7 +80,7 @@ public class WebCamTexture : MonoBehaviour
     private IEnumerator SendImagesToServer()
     {
         WWWForm form = new WWWForm();//±âº» Æû
-        form.AddField("user_id", AppData.Instance.ID);//ÆûÀÇ Ãß°¡ Á¤º¸
+        form.AddField("user_id", AppData.Instance.EMAIL);//ÆûÀÇ Ãß°¡ Á¤º¸
 
         loadingImage.SetActive(true);
 
@@ -90,7 +90,7 @@ public class WebCamTexture : MonoBehaviour
             form.AddBinaryData("file", imageBytes, $"image_{i}.jpg", "image/jpeg");
         }
 
-        UnityWebRequest request = UnityWebRequest.Post(AppData.Instance.ServerImageSaveURL, form);
+        UnityWebRequest request = UnityWebRequest.Post(AppData.Instance.ServerImageUploadURL, form);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -106,7 +106,7 @@ public class WebCamTexture : MonoBehaviour
     {
         WWWForm form = new WWWForm();
 
-        form.AddField("user_id", AppData.Instance.ID);
+        form.AddField("user_id", AppData.Instance.EMAIL);
 
         loadingImage.SetActive(true);
 
@@ -133,7 +133,7 @@ public class WebCamTexture : MonoBehaviour
     {
         WWWForm form = new WWWForm();
 
-        form.AddField("user_id", AppData.Instance.ID);
+        form.AddField("user_id", AppData.Instance.EMAIL);
         form.AddField("timestamp", curtimestamp);
 
         loadingImage.SetActive(true);
@@ -158,7 +158,7 @@ public class WebCamTexture : MonoBehaviour
 
     IEnumerator DownloadModel()
     {
-        string url = $"{AppData.Instance.ServerModelURL}?user_id={AppData.Instance.ID}&name={AppData.Instance.CurentTimeStamp}";
+        string url = $"{AppData.Instance.ServerModelURL}?user_id={AppData.Instance.EMAIL}&name={AppData.Instance.CurentTimeStamp}";
         UnityWebRequest request = UnityWebRequest.Get(url);
 
         yield return request.SendWebRequest();
