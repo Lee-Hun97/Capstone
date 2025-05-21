@@ -64,7 +64,8 @@ public class AssetBundleBuilder
         string prefabPath = "Assets/TempModel.prefab";
 
         // 서버 기준의 출력 폴더 구조로 번들 저장
-        string bundleOutputPath = Path.Combine("outputs", $"user_{userId}", timestamp);
+        //string bundleOutputPath = Path.Combine("outputs", $"user_{userId}", timestamp);
+        string bundleOutputPath = Path.Combine(@"E:\team_project_server\outputs", $"user_{userId}", timestamp);
         if (!Directory.Exists(bundleOutputPath))
             Directory.CreateDirectory(bundleOutputPath);
 

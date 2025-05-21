@@ -5,8 +5,15 @@ import uuid
 import subprocess
 import time
 import shutil
+import cv2
+import cv2.aruco as aruco
+import numpy as np
+import glob
 from subprocess import Popen, PIPE, STDOUT
 from get_ScaleFactor import get_scale_factor
+print("현재 Flask 실행 위치:", os.getcwd())
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'database.db')
 
 camera_matrix = np.array([
     [0, 0, 0],
@@ -20,7 +27,7 @@ app = Flask(__name__)
 
 # DB 연결 함수 (외래키 활성화 포함)
 def get_db():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_PATH)
     conn.execute('PRAGMA foreign_keys = ON')
     return conn
 
@@ -90,8 +97,8 @@ def process_rc():
     output_folder = os.path.abspath(os.path.join('outputs', f'user_{user_id}', timestamp))
     os.makedirs(output_folder, exist_ok=True)
     output_model_path = os.path.join(output_folder, 'model.fbx')
-    scale_factor = get_scale_factor(input_folder, camera_matrix, dist_coeffs, marker_length_cm=5.0)
-    print("스케일 팩터:", scale_factor)
+#    scale_factor = get_scale_factor(input_folder, camera_matrix, dist_coeffs, marker_length_cm=5.0)
+#    print("스케일 팩터:", scale_factor)
     
     command = [
         "RealityCapture.exe",
@@ -102,7 +109,7 @@ def process_rc():
         "-selectComponent", "Component 0",
         "-selectModel", "Model 1",
         "-simplify",
-        "-scaleSceneUnits", str(scale_factor),
+#        "-scaleSceneUnits", str(scale_factor),
         "-exportModel", "Model 1", output_model_path,
         "-quit"
     ]
