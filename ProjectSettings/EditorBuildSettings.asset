@@ -17,4 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01.Scenes/3DModelScene.unity
     guid: 71aa848a7cfcc3943bb480300c55dfa8
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/01.Scenes/MR_CameraScene.unity
+    guid: f56eba9c6b73c8646b6a93f6ab579af6
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: eb078f3e19443804e9ef8a019a5df81f, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: f1071a3337dbef74cbe56d96a42ceb12, type: 2}

@@ -6,6 +6,7 @@ using System.IO;
 using TMPro;
 using UnityEngine.Networking;
 using System;
+using System.Reflection;
 
 public class WebCamTexture : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class WebCamTexture : MonoBehaviour
     [SerializeField] private TextMeshProUGUI previewText; //현재 캡쳐한 이미지 수
     //public Transform galleryContent;// 갤러리의 부모 객체
     //public GameObject imagePrefab;  // 갤러리에 추가할 이미지 프리팹, 제거 할 수 있어야 함
+
+    private string bundleUrl;
 
     private string persistentFolderPath;
     private string temFolderPath;
@@ -36,6 +39,7 @@ public class WebCamTexture : MonoBehaviour
     {
         persistentFolderPath = AppData.Instance.ServerModelGetbyNameURL;
         temFolderPath = AppData.Instance.ServerImageUploadURL;
+        bundleUrl = AppData.Instance.GetBundleUrl; //{id,timestamp}
 
         // 웹캠 시작
         webCamTexture = new UnityEngine.WebCamTexture();
@@ -102,10 +106,9 @@ public class WebCamTexture : MonoBehaviour
             Debug.LogError("Upload failed: " + request.error);
     }
 
-    private IEnumerator GetTimeStampinServer()
+    private IEnumerator GetTimeStampinServer()//이미지 업로드 후 모델 생성 시 가장 최근에 만들어진 파일일 것이기 때문에
     {
         WWWForm form = new WWWForm();
-
         form.AddField("user_id", AppData.Instance.EMAIL);
 
         loadingImage.SetActive(true);
@@ -119,10 +122,11 @@ public class WebCamTexture : MonoBehaviour
             string jsonResponse = request.downloadHandler.text;
             UploadResponse response = JsonUtility.FromJson<UploadResponse>(jsonResponse);
 
+            //현재 타임스템프를 저장해서 재활용
             curTimeStamp = response.timestamp;
             AppData.Instance.CurentTimeStamp = curTimeStamp;
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.3f);
             StartCoroutine(RunRCinServer(curTimeStamp));
         }
         else
@@ -132,13 +136,13 @@ public class WebCamTexture : MonoBehaviour
     private IEnumerator RunRCinServer(string curtimestamp)
     {
         WWWForm form = new WWWForm();
-
         form.AddField("user_id", AppData.Instance.EMAIL);
         form.AddField("timestamp", curtimestamp);
 
         loadingImage.SetActive(true);
 
         UnityWebRequest request = UnityWebRequest.Post(AppData.Instance.RunRCURL, form);
+
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -147,31 +151,39 @@ public class WebCamTexture : MonoBehaviour
             Debug.Log("3D Modeling Finished!");
 
             yield return new WaitForSeconds(1f);
-            StartCoroutine(DownloadModel());
+            StartCoroutine(SaveCreatedUnityBundletoPath());
 
-            yield return new WaitForSeconds(1f);//재사용 할거라면 dic 같은걸로 값을 저장하는 것이 좋다.
+            yield return new WaitForSeconds(1f);//***WaitForSeconds은 호출 시 새로 생성하는 것이기 때문에 재사용 할거라면 dic 같은걸로 값을 저장하는 것이 좋다.
             AppSceneManger.Instance.ChangeScene(Scene_name.ModelScene);
         }
         else
             Debug.LogError("Upload failed: " + request.error);
     }
 
-    IEnumerator DownloadModel()
+    IEnumerator SaveCreatedUnityBundletoPath()//현재 제작한 모델링을 번들로 저장(특정 경로에 저장만 해주고 활용은 다른 사람이 함.)
     {
-        string url = $"{AppData.Instance.ServerModelURL}?user_id={AppData.Instance.EMAIL}&name={AppData.Instance.CurentTimeStamp}";
-        UnityWebRequest request = UnityWebRequest.Get(url);
+        string timestamp = curTimeStamp;
+        string url = $"{bundleUrl}?user_id={AppData.Instance.EMAIL}&timestamp={timestamp}";
+        
+        string path = Path.Combine(Application.persistentDataPath, AppData.Instance.bundleName);
 
-        yield return request.SendWebRequest();
+        // 번들이 존재하지 않으면 다운로드
+        if (!File.Exists(path))
+        {
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
+            {
+                yield return request.SendWebRequest();
 
-        if (request.result != UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("Download Failed: " + request.error);
-        }
-        else
-        {
-            string savePath = Path.Combine(AppData.Instance.User3DModelPath, "model.obj");
-            File.WriteAllBytes(savePath, request.downloadHandler.data);
-            Debug.Log($"Model saved to: {savePath}");
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    File.WriteAllBytes(path, request.downloadHandler.data);
+                    Debug.Log("Bundle saved to: " + path);
+                }
+                else
+                {
+                    Debug.LogError("Download failed: " + request.error);
+                }
+            }
         }
     }
 
