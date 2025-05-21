@@ -163,7 +163,7 @@ public class AppData : Singlton<AppData>
                 string savePath = Path.Combine(user3DModelPath, index + ".bundle");//번들로 저장 형태가 변경되었기에
                 System.IO.File.WriteAllText(savePath, objData);
 
-                Debug.Log($"{savePath}에 {index}모델 저장 완료.");
+                Debug.Log($"{savePath}에 {index}모델 저장 완료, size: {new FileInfo(savePath).Length} bytes");
             }
             else
             {

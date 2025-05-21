@@ -32,6 +32,8 @@ public class GetSavedModel : MonoBehaviour
         {
             File.Copy(modelsSavePath, forLoadPath, overwrite: true);
             Debug.Log($"번들을 복사했습니다: {modelsSavePath} → {forLoadPath}");
+            Debug.Log(File.Exists(modelsSavePath));
+            Debug.Log(File.Exists(forLoadPath));
 
             AppSceneManger.Instance.ChangeScene(Scene_name.MRScene);//번들이 존재할 시 번들을 복사하고 이동
         }
