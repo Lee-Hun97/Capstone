@@ -21,7 +21,9 @@ public class TouchBundleSpawner : MonoBehaviour
 		string path = Path.Combine(Application.persistentDataPath, BundleFileName);
 		bundle = File.Exists(path) ? AssetBundle.LoadFromFile(path) : null;
 		if (bundle != null)
+		{
 			prefab = bundle.LoadAsset<GameObject>(AssetName);
+		}
 		else
 			Debug.LogError($"Failed to load bundle at {path}");
 	}
@@ -37,6 +39,7 @@ public class TouchBundleSpawner : MonoBehaviour
 			var pose = hits[0].pose;
 			// Instantiate bundle prefab
 			var go = Instantiate(prefab, pose.position, pose.rotation);
+			Debug.Log("good");
 			go.name = AssetName;
 			// Attach CombinedCupGuide component
 			if (go.GetComponent<CombinedCupGuide>() == null)
