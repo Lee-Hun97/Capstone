@@ -11,7 +11,7 @@ public class AppData : Singlton<AppData>
 {
     //모든 데이터를 AppData가 가지고 있어서 변경이 편리하고 다른 곳에서 불필요한 데이터를 가지지않도록 구성
     //가능한 모든 데이터를 이곳에 모아준다.
-    private string serverURL = "http://172.19.25.214:5000";//서버에 따라서 해당 값을 바꿔줘야한다. Flask서버를 열때 url을 체크***
+    private string serverURL = "http://172.30.1.39:5000";//서버에 따라서 해당 값을 바꿔줘야한다. Flask서버를 열때 url을 체크***
 
     private string captureImageFolderPath = Path.Combine(Application.temporaryCachePath, "CapturedImages");
     private string user3DModelPath = Path.Combine(Application.persistentDataPath, "User3DModels");//모델의 경우 재사용을 해야하기에 삭제의 위험이 적은 persistentpath 사용
@@ -34,7 +34,7 @@ public class AppData : Singlton<AppData>
     public string EMAIL;
     public string PW;//전부 private으로 변경필요
 
-    private string[] timeStamps = new string[3];
+    private string[] timeStamps = new string[3] { "-1", "-1", "-1" };
     public string CurentTimeStamp = "";
 
     public string bundleName { get {return "model.bundle"; } }
@@ -127,7 +127,10 @@ public class AppData : Singlton<AppData>
                 ResultResponse results = JsonConvert.DeserializeObject<ResultResponse>(json);
                 foreach (var item in results.models)
                 {
-                    timeStamps[i] = item.timestamp;
+                    if (item != null || item.timestamp != null || item.timestamp != "") timeStamps[i] = item.timestamp;
+                    else timeStamps[i] = "-1";
+
+                    Debug.Log($"{i} {timeStamps[i]}");
                     i++;
                 }
             }
@@ -138,17 +141,25 @@ public class AppData : Singlton<AppData>
         }
 
 
-        for (int n = 0; n < 3; n++)
+        for (int n = 0; n < timeStamps.Length; n++)
         {
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(LoadModelFromServer(GetBundleUrl, n));
+            if (timeStamps[n] != "-1")
+            {
+                yield return new WaitForSeconds(1f);
+                StartCoroutine(LoadModelFromServer(GetBundleUrl, n));
+            }
         }
     }
 
     IEnumerator LoadModelFromServer(string serverModelUrl, int index)
     {
         string timestamp = timeStamps[index];
+        if (timestamp == "-1") yield break;
+
         string url = $"{serverModelUrl}?user_id={user_id}&timestamp={timestamp}";
+        string fileName = $"model{index}.bundle";
+
+        Debug.Log($"{timestamp} {url} {fileName}");
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -157,13 +168,17 @@ public class AppData : Singlton<AppData>
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                string objData = request.downloadHandler.text;
+                //string objData = request.downloadHandler.text;
+                byte[] data = request.downloadHandler.data;
 
                 // 저장
-                string savePath = Path.Combine(user3DModelPath, index + ".bundle");//번들로 저장 형태가 변경되었기에
-                System.IO.File.WriteAllText(savePath, objData);
+                string savePath = Path.Combine(user3DModelPath, fileName);//번들로 저장 형태가 변경되었기에
+                //System.IO.File.WriteAllText(savePath, objData);
+                System.IO.File.WriteAllBytes(savePath, data);
 
-                Debug.Log($"{savePath}에 {index}모델 저장 완료, size: {new FileInfo(savePath).Length} bytes");
+                //경로에 잘 저장되었는지 확인
+                if (File.Exists(savePath)) Debug.Log($"{savePath}에 {index}모델 저장 완료, size: {new FileInfo(savePath).Length} bytes");
+                else Debug.Log($"저장 중 문제 발생.(LoadModelFromServer함수)  > {savePath} / {fileName}");
             }
             else
             {

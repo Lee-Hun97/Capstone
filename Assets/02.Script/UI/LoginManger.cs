@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.Networking;
 using System.Text;
 using static LoginManger;
+using System.IO;
 
 public class LoginManger : MonoBehaviour
 {

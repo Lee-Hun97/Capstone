@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using System;
+using System.Reflection;
 
 public class GetSavedModel : MonoBehaviour
 {
@@ -13,9 +14,11 @@ public class GetSavedModel : MonoBehaviour
 
     private void Start()
     {
+
         for (int i = 0; i < 3; i++)
         {
-            string modelsSavePath = Path.Combine(AppData.Instance.User3DModelPath, i + ".bundle");
+            string fileName = $"model{i}.bundle";
+            string modelsSavePath = Path.Combine(AppData.Instance.User3DModelPath, fileName);
 
             if (!File.Exists(modelsSavePath))
             {
@@ -25,7 +28,8 @@ public class GetSavedModel : MonoBehaviour
     }
     public void GetIndexModel(int index)
     {
-        string modelsSavePath = Path.Combine(AppData.Instance.User3DModelPath, index +".bundle");
+        string fileName = $"model{index}.bundle";
+        string modelsSavePath = Path.Combine(AppData.Instance.User3DModelPath, fileName);
         string forLoadPath = Path.Combine(Application.persistentDataPath, AppData.Instance.bundleName);//굳이 AppData를 참조 해야하는가? -> 이름을 알아야 다른 파일에서 어떻게 저장될지 예측 가능
 
         if (File.Exists(modelsSavePath))

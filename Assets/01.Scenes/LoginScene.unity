@@ -563,6 +563,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Login_Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 6534515418213224935, guid: 689a4c6180552904ab344390ffa674c7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6895580372650437908, guid: 689a4c6180552904ab344390ffa674c7, type: 3}
       propertyPath: m_Color.b
       value: 1
