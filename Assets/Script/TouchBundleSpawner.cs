@@ -7,7 +7,7 @@ using UnityEngine.XR.ARSubsystems;
 [RequireComponent(typeof(ARRaycastManager))]
 public class TouchBundleSpawner : MonoBehaviour
 {
-	const string BundleFileName = "model.bundle";
+	const string BundleFileName = "testbundle";
 	const string AssetName = "Basic Ceramic";
 
 	ARRaycastManager raycastMgr;
@@ -18,10 +18,12 @@ public class TouchBundleSpawner : MonoBehaviour
 	void Awake()
 	{
 		raycastMgr = GetComponent<ARRaycastManager>();
-		string path = Path.Combine(Application.persistentDataPath, AppData.Instance.bundleName);
+		string path = Path.Combine(Application.persistentDataPath, BundleFileName);
 		bundle = File.Exists(path) ? AssetBundle.LoadFromFile(path) : null;
 		if (bundle != null)
+		{
 			prefab = bundle.LoadAsset<GameObject>(AssetName);
+		}
 		else
 			Debug.LogError($"Failed to load bundle at {path}");
 	}
@@ -37,6 +39,7 @@ public class TouchBundleSpawner : MonoBehaviour
 			var pose = hits[0].pose;
 			// Instantiate bundle prefab
 			var go = Instantiate(prefab, pose.position, pose.rotation);
+			Debug.Log("good");
 			go.name = AssetName;
 			// Attach CombinedCupGuide component
 			if (go.GetComponent<CombinedCupGuide>() == null)

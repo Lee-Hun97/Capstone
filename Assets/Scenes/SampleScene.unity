@@ -130,6 +130,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6024852945755162822, guid: c9380312337d8e54c860be159beebad9, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 6024852945755162822, guid: c9380312337d8e54c860be159beebad9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 8000226950839565944, guid: c9380312337d8e54c860be159beebad9, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -209,6 +217,26 @@ PrefabInstance:
     - target: {fileID: 8000226950839565944, guid: c9380312337d8e54c860be159beebad9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 782628383}
+    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ConfirmAlignment
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PersistentGuidePlacement, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8862182492663380032, guid: c9380312337d8e54c860be159beebad9, type: 3}
       propertyPath: m_Name
@@ -391,9 +419,9 @@ GameObject:
   - component: {fileID: 782628379}
   - component: {fileID: 782628378}
   - component: {fileID: 782628377}
-  - component: {fileID: 782628376}
   - component: {fileID: 782628380}
-  - component: {fileID: 782628381}
+  - component: {fileID: 782628382}
+  - component: {fileID: 782628383}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -401,20 +429,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &782628376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 782628375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PlanePrefab: {fileID: 7708854719653188311, guid: 2f4e3eeae76dd1543b05435d37649a6d, type: 3}
-  m_DetectionMode: -1
 --- !u!114 &782628377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -474,7 +488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AnchorPrefab: {fileID: 0}
---- !u!114 &782628381
+--- !u!114 &782628382
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -483,9 +497,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 782628375}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d3d24e3e367be94e9d4da5e42739409, type: 3}
+  m_Script: {fileID: 11500000, guid: 4dea56a9eaadd1c439095de4f9a371cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SerializedLibrary: {fileID: 11400000, guid: e464abc36350c4241ac06b0591490d92, type: 2}
+  m_MaxNumberOfMovingImages: 0
+  m_TrackedImagePrefab: {fileID: 0}
+--- !u!114 &782628383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782628375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef7870f077312e4fbed0389ec9f79fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smoothingSpeed: 10
 --- !u!1 &1828601335
 GameObject:
   m_ObjectHideFlags: 0

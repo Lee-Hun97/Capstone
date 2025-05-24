@@ -52,7 +52,8 @@ public class CombinedCupGuide : MonoBehaviour
 			defaultLR.enabled = false;
 
 		// 가이드라인 머티리얼 생성…
-		guidelineMat = new Material(Shader.Find("Unlit/Color"));
+		var shader = Shader.Find("Sprites/Default");
+		guidelineMat = new Material(shader);
 		guidelineMat.color = guidelineColor;
 
 		BuildVolumeProfile();
@@ -115,6 +116,9 @@ public class CombinedCupGuide : MonoBehaviour
 
 	public void GenerateGuide(float targetVolume_ml)
 	{
+
+		foreach (var mr in GetComponentsInChildren<MeshRenderer>())
+			mr.enabled = false;
 		// 1) 실세계 부피(m³)
 		float worldV = Mathf.Max(0f, targetVolume_ml * 1e-6f);
 
@@ -140,6 +144,11 @@ public class CombinedCupGuide : MonoBehaviour
 
 		// 7) 로컬 hLocal 그대로 가이드라인 그리기
 		DrawSectionHull(hLocal);
+
+
+		Debug.Log($"GenerateGuide called with ml = {targetVolume_ml}");
+		Debug.Log($"Drawing guide at height: {hLocal}");
+
 	}
 
 	void DrawSectionHull(float hLocal)

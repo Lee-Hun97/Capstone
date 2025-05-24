@@ -11,7 +11,7 @@ public class AppSceneManger : Singlton<AppSceneManger>
     private string scene1_name = "MainScene";
     private string scene2_name = "CameraScene";
     private string scene3_name = "3DModelScene";
-    private string scene4_name = "MR_CameraScene";
+    private string scene4_name = "SampleScene";
 
     protected override void Awake()
     {
