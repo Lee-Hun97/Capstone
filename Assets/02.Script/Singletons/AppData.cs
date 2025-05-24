@@ -11,7 +11,7 @@ public class AppData : Singlton<AppData>
 {
     //모든 데이터를 AppData가 가지고 있어서 변경이 편리하고 다른 곳에서 불필요한 데이터를 가지지않도록 구성
     //가능한 모든 데이터를 이곳에 모아준다.
-    private string serverURL = "http://172.19.1.209:5000";//서버에 따라서 해당 값을 바꿔줘야한다. Flask서버를 열때 url을 체크***
+    private string serverURL = "http://172.30.1.97:5000";//서버에 따라서 해당 값을 바꿔줘야한다. Flask서버를 열때 url을 체크***
 
     private string captureImageFolderPath = Path.Combine(Application.temporaryCachePath, "CapturedImages");
     private string user3DModelPath = Path.Combine(Application.persistentDataPath, "User3DModels");//모델의 경우 재사용을 해야하기에 삭제의 위험이 적은 persistentpath 사용

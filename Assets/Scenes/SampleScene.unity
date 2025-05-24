@@ -130,14 +130,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6024852945755162822, guid: c9380312337d8e54c860be159beebad9, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 6024852945755162822, guid: c9380312337d8e54c860be159beebad9, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 8000226950839565944, guid: c9380312337d8e54c860be159beebad9, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -219,32 +211,15 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 782628383}
-    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ConfirmAlignment
-      objectReference: {fileID: 0}
-    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PersistentGuidePlacement, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 8192406325764145845, guid: c9380312337d8e54c860be159beebad9, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 8862182492663380032, guid: c9380312337d8e54c860be159beebad9, type: 3}
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 4771875761729147410, guid: c9380312337d8e54c860be159beebad9, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9380312337d8e54c860be159beebad9, type: 3}

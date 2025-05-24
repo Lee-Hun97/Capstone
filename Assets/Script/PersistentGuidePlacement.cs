@@ -39,6 +39,11 @@ public class PersistentGuidePlacement : MonoBehaviour
 		if (bundle != null)
 		{
 			prefab = bundle.LoadAsset<GameObject>(AssetName);
+            if (prefab == null)
+            {
+                Debug.LogError($"번들 안에서 '{AssetName}' 이름의 프리팹을 찾지 못함");
+                return;
+            }
         }
 		else
 		{
